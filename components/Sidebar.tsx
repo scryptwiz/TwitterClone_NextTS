@@ -3,7 +3,7 @@ import SidebarRow from './SidebarRow'
 
 function Sidebar() {
   return (
-    <div className='flex flex-col gap-3 items-center lg:items-start'>
+    <div className='flex flex-col gap-1 items-center lg:items-start'>
         <img src='/assets/logo.png' className='my-5 w-7 h-7 mx-3 cursor-pointer' alt='Twiter logo'/>
         <SidebarRow Icon={HomeIcon} title='Home'/>
         <SidebarRow Icon={HashtagIcon} title='Explore'/>

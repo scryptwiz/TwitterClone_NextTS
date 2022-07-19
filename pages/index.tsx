@@ -1,13 +1,19 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useTheme } from 'next-themes'
+import { fetchTweets } from '../utils/fetchtweets'
 import Sidebar from '../components/Sidebar'
 import { useEffect, useState } from 'react'
 import Feed from '../components/Feed'
 import Widget from '../components/Widget'
 import Router from 'next/router'
+import { Tweet } from '../typings'
 
-const Home: NextPage = () => {
+interface props {
+  tweets: Tweet[]
+}
+
+const Home = ({tweets}:props) => {
   const [mounted, setMounted] = useState(false)
   const {theme, setTheme} = useTheme()
   const reload = () => {
@@ -33,7 +39,7 @@ const Home: NextPage = () => {
           </label>
         </div>
         {/* Feed */}
-        <Feed/>
+        <Feed tweets={tweets}/>
         {/* Widget */}
         <Widget themes={theme}/>
       </main>
@@ -42,3 +48,12 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const tweets = await fetchTweets();
+  return {
+    props: {
+      tweets,
+    }
+  }
+}
