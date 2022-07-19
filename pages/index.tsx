@@ -8,6 +8,7 @@ import Feed from '../components/Feed'
 import Widget from '../components/Widget'
 import Router from 'next/router'
 import { Tweet } from '../typings'
+import { Toaster } from 'react-hot-toast'
 
 interface props {
   tweets: Tweet[]
@@ -28,6 +29,7 @@ const Home = ({tweets}:props) => {
         <title>Home / Twiter</title>
         <link rel="icon" href="/assets/logo.png" />
       </Head>
+      <Toaster/>
       <main className='grid grid-cols-9'>
         {/* Side bar */}
         <div className='col-span-2 flex flex-col items-center border-r border-gray-500 h-screen'>
