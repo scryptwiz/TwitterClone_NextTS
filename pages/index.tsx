@@ -18,8 +18,6 @@ interface props {
 
 const Home = ({tweets}:props, providers:any) => {
   const { data: session } = useSession()
-  console.log(session?.user);
-  
   if (!session) {
     return (
       <>
