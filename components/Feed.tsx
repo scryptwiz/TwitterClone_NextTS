@@ -2,7 +2,7 @@ import { RefreshIcon } from "@heroicons/react/outline"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import { Tweet } from "../typings"
-import { fetchTweets } from "../utils/fetchtweets"
+import { fetchTweets } from "../utils/fetchTweets"
 import TweetBox from "./TweetBox"
 import TweetsComponent from './TweetsComponent'
 
@@ -26,7 +26,7 @@ const Feed = ({tweets: tweetsProp }:props) => {
           <RefreshIcon className="text-twitter w-7 h-7 transition-all duration-500 ease-out hover:rotate-180 active:scale-125 cursor-pointer" onClick={handleRefresh}/>
       </div>
       <div className="pb-5">
-        <TweetBox/>
+        <TweetBox setTweets={setTweets}/>
       </div>
       {/* Feed */}
       <div>

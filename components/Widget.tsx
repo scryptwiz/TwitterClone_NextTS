@@ -5,7 +5,7 @@ interface props {
 }
 const Widget = ({themes}:props) => {
     return (
-        <div className="col-span-2 hidden lg:inline mt-3">
+        <div className="col-span-2 hidden lg:inline mt-3 pl-2">
             {/* Search */}
             <div className="flex items-center gap-2 bg-gray-200 dark:bg-gray-200 dark:bg-opacity-10 rounded-full p-3 mb-5">
                 <SearchIcon className="w-5 h-5 text-gray-400"/>
