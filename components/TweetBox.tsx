@@ -14,6 +14,8 @@ const TweetBox = ({  setTweets }: Props) => {
   const imageInputRef = useRef<HTMLInputElement>(null)
   const { data: session } = useSession();
   const [ imageUrlBoxIsOpen, setImageUrlBoxIsOpen ] = useState<boolean>(false);
+  
+
 
   const addImageToTweet = (e: React.MouseEvent<HTMLButtonElement,globalThis.MouseEvent>) => {
     e.preventDefault();
@@ -29,7 +31,6 @@ const TweetBox = ({  setTweets }: Props) => {
       profileImg: session?.user?.image || 'https://links.papareact.com/gll',
       image: image,
     }
-    console.log(tweetBody);
     const result= await fetch(`/api/addTweet`, {
         body: JSON.stringify(tweetBody),
         method: 'POST'
@@ -37,11 +38,7 @@ const TweetBox = ({  setTweets }: Props) => {
        const json = await result.json();
        const newTweets = await fetchTweets()
        setTweets(newTweets)
-       toast('Tweet Posted',
-      //   {
-      //   icons: 'hi'
-      //  }
-        )
+       toast('Tweet Posted')
        return json
   }
   const handleSubmit=(e: MouseEvent<HTMLButtonElement,globalThis.MouseEvent>) =>{
@@ -52,10 +49,12 @@ const TweetBox = ({  setTweets }: Props) => {
     setImage('')
     setImageUrlBoxIsOpen(false)
   }
-
+  let userImage = session?.user?.image
+  
+  
   return (
     <div className='flex gap-2 px-5'>
-        <img src={session?.user?.image || 'https://links.papareact.com/gll'} className="mt-4 h-14 w-14 rounded-full object-cover" alt="profile logo"/>
+        <img src={userImage || 'https://pbs.twimg.com/profile_images/1549328709215260673/dcm5WbTX_400x400.jpg'} className="mt-4 h-14 w-14 rounded-full object-cover" alt="profile logo"/>
         <div className='flex flex-1 items-center pl-2'>
           <form className='flex flex-col flex-1'>
             <input type="text" value={tweet} onChange={(e)=>setTweet(e.target.value)} placeholder="What's Happening" className='h-24 w-full text-xl outline-none bg-transparent'/>

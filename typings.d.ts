@@ -29,3 +29,18 @@ export interface Comment extends CommentBody {
         _type: 'reference'
     }
 }
+export type LikesBody = {
+    tweetId: string,
+    username: string,
+}
+export interface Likes extends LikesBody {
+    _id: string
+    _createdAt: string
+    _rev: string
+    _type: 'likes',
+    _updatedAt: string;
+    tweet: {
+        _ref: string,
+        _type: 'reference'
+    }
+}

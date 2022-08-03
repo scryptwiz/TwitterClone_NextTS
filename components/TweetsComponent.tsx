@@ -1,13 +1,15 @@
-import { Comment, CommentBody, Tweet } from "../typings"
+import { Comment, CommentBody, Likes, LikesBody, Tweet } from "../typings"
 import TimeAgo from 'react-timeago'
 import { CalendarIcon, ChatAlt2Icon, EmojiHappyIcon, HeartIcon, LocationMarkerIcon, PhotographIcon, SearchCircleIcon, SwitchHorizontalIcon, UploadIcon } from "@heroicons/react/outline"
+import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid";
 import { useEffect, useState } from "react"
 import { fetchComments } from "../utils/fetchComments"
 import { useSession } from "next-auth/react"
 import toast from "react-hot-toast"
+import { fetchLikes } from "../utils/fetchLikes";
 
 interface props {
-    tweet:Tweet
+    tweet:Tweet,
 }
 const TweetsComponent = ({tweet}:props) => {
     const [comments, setcomments] = useState<Comment[]>([])
@@ -15,6 +17,8 @@ const TweetsComponent = ({tweet}:props) => {
     const [input, setInput] = useState<string>('')
     const { data:session } = useSession()
     const [selectedFile, setSelectedFile] = useState(null)
+    const [likes, setLikes] = useState<Likes[]>([])
+    const [liked, setLiked] = useState<boolean>(false)
     const refreshComments= async () => {
         const comments:Comment[] = await fetchComments(tweet._id)
         setcomments(comments)
@@ -37,7 +41,30 @@ const TweetsComponent = ({tweet}:props) => {
 
         return json;
     }
-
+    const likePosts = async () => {
+        const likesInfo: LikesBody = {
+            username: session?.user?.name || 'Unknown User',
+            tweetId: tweet._id
+        }
+        const result= await fetch(`/api/addLikes`, {
+            body: JSON.stringify(likesInfo),
+            method: 'POST'
+        }) 
+        
+        const json = await result.json();
+        const newLikes = await fetchLikes(likesInfo.tweetId)
+        setLikes(newLikes)
+        toast('Successfully liked')
+        return json;
+    }
+    const likePost= async ()=> {   
+        if (liked) {
+            setLiked(false);
+        }else {
+            setLiked(true);
+            likePosts()
+        }
+    }
     const handleSubmit=(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
@@ -49,6 +76,9 @@ const TweetsComponent = ({tweet}:props) => {
     useEffect(() => {
         refreshComments()
     }, [])
+    let tweetProfileImage = tweet.profileImg;
+    console.log(tweetProfileImage);
+    
   return (
     <>
            {commentBoxVisible && (
@@ -96,7 +126,7 @@ const TweetsComponent = ({tweet}:props) => {
             )}
     <div className="flex flex-col gap-3 border-y p-5 border-gray-500">
         <div className="flex gap-3">
-            <img className="h-10 w-10 rounded-full object-cover" src={tweet.profileImg} alt="Profile Image" />
+            <img className="h-10 w-10 rounded-full object-cover" src={tweetProfileImage} alt="Profile Image" />
             <div>
                 <div className="flex gap-1 items-center">
                     <p className="mr-1 font-bold">{tweet.username}</p>
@@ -116,8 +146,19 @@ const TweetsComponent = ({tweet}:props) => {
                 <div className='flex cursor-pointer items-center text-gray-400 space-x-3'>
                     <SwitchHorizontalIcon className="h-5 w-5"/>
                 </div>
-                <div className='flex cursor-pointer items-center text-gray-400 space-x-3'>
-                    <HeartIcon className="h-5 w-5"/>
+                <div className='flex cursor-pointer items-center text-gray-400 space-x-3' onClick={likePost}>
+                   <div className="group-hover:bg-pink-600/100">
+                   {!liked ? (
+                         <HeartIcon className="h-5 w-5"/>
+                   )
+                    : (
+                        <HeartIconFilled className="h-5 w-5 text-pink-600"/>
+                    )
+                   }
+                   </div>
+                   {likes.length > 0 && (
+                        <span className={`group-hover:text-pink-600 text-sm ${liked && "text-pink-600"}`}>{likes.length}</span>
+                   )}
                 </div>
                 <div className='flex cursor-pointer items-center text-gray-400 space-x-3'>
                     <UploadIcon className="h-5 w-5"/>
@@ -132,7 +173,7 @@ const TweetsComponent = ({tweet}:props) => {
                 {comments.map((comment)=> (
                     <div key={comment._id} className='relative flex space-x-2'>
                         <hr className="absolute left-5 top-10 h-8 border-x border-twitter/30"/>
-                        <img src={comment.profileImage} className='mt-2 w-7 h-7 object-cover rounded-full' alt="Profile Image" />
+                        <img src={comment.profileImage || ''} className='mt-2 w-7 h-7 object-cover rounded-full' alt="Profile Image" />
                         <div>
                             <div className="flex items-center space-x-1">
                                 <p className="mr-1 font-bold">{comment.username}</p>
