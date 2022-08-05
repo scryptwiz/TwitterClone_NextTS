@@ -20,6 +20,7 @@ const TweetsComponent = ({tweet}:props) => {
     const [likes, setLikes] = useState<Likes[]>([])
     const [liked, setLiked] = useState<boolean>(false)
     const [tweetIdRef, setTweetIdRef] = useState()
+    const [tweetUseremail, setTweetUseremail] = useState()
     const refreshComments= async () => {
         const comments:Comment[] = await fetchComments(tweet._id)
         setcomments(comments)
@@ -45,7 +46,7 @@ const TweetsComponent = ({tweet}:props) => {
     const likePosts = async () => {
         console.log(tweet._id);
         const likesInfo: LikesBody = {
-            username: session?.user?.name || 'Unknown User',
+            username: session?.user?.email || 'Unknown Email',
             tweetId: tweet._id
         }
         const result= await fetch(`/api/addLikes`, {
@@ -75,26 +76,16 @@ const TweetsComponent = ({tweet}:props) => {
             setLikes(newLikes)
         }
         showLike()
-        // console.log(likes);
-        likes.map((items:any)=>{
-            console.log(items.username);
-            
-            setTweetIdRef(items.tweetId._ref);
-        });
-        console.log(tweetIdRef);
-        console.log(session)
     }, [])
     let tweetProfileImage = tweet.profileImg;
     const likePost= async ()=> {   
-        if (tweetIdRef==tweet._id) {
-            console.log('Undone');
-            
-            // setLiked(false);
+        let found =  likes.find((items:any,i:number)=>items.username==session?.user?.email && items.tweetId._ref == tweet._id );
+        if (found) {
+            toast('You no fit unlike')
         }else {
-            console.log('Done');
-            
-            // setLiked(true);
-            likePosts()
+            likePosts();
+            const newLikes = await fetchLikes(tweet._id)
+            setLikes(newLikes)
         }
     }
     
