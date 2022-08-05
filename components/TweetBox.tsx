@@ -1,5 +1,5 @@
 import { useState, useRef, MouseEvent, Dispatch, SetStateAction } from 'react'
-import { CalendarIcon, EmojiHappyIcon, LocationMarkerIcon, PhotographIcon, SearchCircleIcon } from '@heroicons/react/outline'
+import { CalendarIcon, EmojiHappyIcon, LocationMarkerIcon, PhotographIcon, LinkIcon } from '@heroicons/react/outline'
 import { useSession } from 'next-auth/react'
 import { Tweet, TweetBody } from '../typings'
 import { fetchTweets } from '../utils/fetchTweets'
@@ -14,7 +14,7 @@ const TweetBox = ({  setTweets }: Props) => {
   const imageInputRef = useRef<HTMLInputElement>(null)
   const { data: session } = useSession();
   const [ imageUrlBoxIsOpen, setImageUrlBoxIsOpen ] = useState<boolean>(false);
-  
+  const filePickerRef = useRef<HTMLInputElement>(null);
 
 
   const addImageToTweet = (e: React.MouseEvent<HTMLButtonElement,globalThis.MouseEvent>) => {
@@ -23,6 +23,15 @@ const TweetBox = ({  setTweets }: Props) => {
     setImage(imageInputRef.current.value)
     imageInputRef.current.value = '';
     setImageUrlBoxIsOpen(false)
+  }
+  const addImgToTweet = (e:any) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+    reader.readAsDataURL(e.target.files[0]);
+    }
+    reader.onload = (readerEvent:any) => {
+      setImage(readerEvent.target.result);
+    };
   }
   const postTweet = async () => {
     const tweetBody: TweetBody = {
@@ -40,7 +49,6 @@ const TweetBox = ({  setTweets }: Props) => {
     const newTweets = await fetchTweets()
     setTweets(newTweets)
     toast('Tweet Posted')
-    console.log(json)
     return json
   }
   const handleSubmit=(e: MouseEvent<HTMLButtonElement,globalThis.MouseEvent>) =>{
@@ -53,7 +61,6 @@ const TweetBox = ({  setTweets }: Props) => {
   }
   let userImage = session?.user?.image
   
-  
   return (
     <div className='flex gap-2 px-5'>
         <img src={userImage || 'https://pbs.twimg.com/profile_images/1549328709215260673/dcm5WbTX_400x400.jpg'} className="mt-4 h-14 w-14 rounded-full object-cover" alt="profile logo"/>
@@ -64,8 +71,9 @@ const TweetBox = ({  setTweets }: Props) => {
             <div className='flex justify-between items-center'>
               {/* icons */}
               <div className='flex gap-2 text-twitter'>
-                <PhotographIcon onClick={()=> setImageUrlBoxIsOpen(!imageUrlBoxIsOpen)} className='w-5 h-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150'/>
-                <SearchCircleIcon className='w-5 h-5'/>
+                <LinkIcon onClick={()=> setImageUrlBoxIsOpen(!imageUrlBoxIsOpen)} className='w-5 h-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150'/>
+                <PhotographIcon onClick={() => filePickerRef?.current?.click()} className='w-5 h-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150'/>
+                <input type="file" ref={filePickerRef} hidden onChange={addImgToTweet} />
                 <EmojiHappyIcon className='w-5 h-5'/>
                 <CalendarIcon className='w-5 h-5'/>
                 <LocationMarkerIcon className='w-5 h-5'/>
