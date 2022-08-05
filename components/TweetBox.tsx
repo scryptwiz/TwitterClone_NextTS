@@ -31,15 +31,17 @@ const TweetBox = ({  setTweets }: Props) => {
       profileImg: session?.user?.image || 'https://links.papareact.com/gll',
       image: image,
     }
+    
     const result= await fetch(`/api/addTweet`, {
-        body: JSON.stringify(tweetBody),
-        method: 'POST'
-       })
-       const json = await result.json();
-       const newTweets = await fetchTweets()
-       setTweets(newTweets)
-       toast('Tweet Posted')
-       return json
+      body: JSON.stringify(tweetBody),
+      method: 'POST'
+    })
+    const json = await result.json();
+    const newTweets = await fetchTweets()
+    setTweets(newTweets)
+    toast('Tweet Posted')
+    console.log(json)
+    return json
   }
   const handleSubmit=(e: MouseEvent<HTMLButtonElement,globalThis.MouseEvent>) =>{
     e.preventDefault()

@@ -19,6 +19,7 @@ const TweetsComponent = ({tweet}:props) => {
     const [selectedFile, setSelectedFile] = useState(null)
     const [likes, setLikes] = useState<Likes[]>([])
     const [liked, setLiked] = useState<boolean>(false)
+    const [tweetIdRef, setTweetIdRef] = useState()
     const refreshComments= async () => {
         const comments:Comment[] = await fetchComments(tweet._id)
         setcomments(comments)
@@ -42,6 +43,7 @@ const TweetsComponent = ({tweet}:props) => {
         return json;
     }
     const likePosts = async () => {
+        console.log(tweet._id);
         const likesInfo: LikesBody = {
             username: session?.user?.name || 'Unknown User',
             tweetId: tweet._id
@@ -52,32 +54,50 @@ const TweetsComponent = ({tweet}:props) => {
         }) 
         
         const json = await result.json();
-        const newLikes = await fetchLikes(likesInfo.tweetId)
-        setLikes(newLikes)
+        const newLikes:any = await fetchLikes(likesInfo.tweetId)
         toast('Successfully liked')
+        setLikes(newLikes)
         return json;
     }
-    const likePost= async ()=> {   
-        if (liked) {
-            setLiked(false);
-        }else {
-            setLiked(true);
-            likePosts()
-        }
-    }
+    
     const handleSubmit=(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
+        
         postComment()
-
+        
         setInput('');
         setCommentBoxVisible(false)
     }
     useEffect(() => {
         refreshComments()
+        const showLike = async () => {
+            const newLikes = await fetchLikes(tweet._id)
+            setLikes(newLikes)
+        }
+        showLike()
+        // console.log(likes);
+        likes.map((items:any)=>{
+            console.log(items.username);
+            
+            setTweetIdRef(items.tweetId._ref);
+        });
+        console.log(tweetIdRef);
+        console.log(session)
     }, [])
     let tweetProfileImage = tweet.profileImg;
-    console.log(tweetProfileImage);
+    const likePost= async ()=> {   
+        if (tweetIdRef==tweet._id) {
+            console.log('Undone');
+            
+            // setLiked(false);
+        }else {
+            console.log('Done');
+            
+            // setLiked(true);
+            likePosts()
+        }
+    }
+    
     
   return (
     <>
@@ -148,11 +168,11 @@ const TweetsComponent = ({tweet}:props) => {
                 </div>
                 <div className='flex cursor-pointer items-center text-gray-400 space-x-3' onClick={likePost}>
                    <div className="group-hover:bg-pink-600/100">
-                   {!liked ? (
-                         <HeartIcon className="h-5 w-5"/>
-                   )
-                    : (
-                        <HeartIconFilled className="h-5 w-5 text-pink-600"/>
+                   {likes.length > 0 ? (
+                       <HeartIconFilled className="h-5 w-5 text-pink-600"/>
+                       )
+                       : (
+                        <HeartIcon className="h-5 w-5"/>
                     )
                    }
                    </div>

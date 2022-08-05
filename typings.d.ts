@@ -31,7 +31,7 @@ export interface Comment extends CommentBody {
 }
 export type LikesBody = {
     tweetId: string,
-    username: string,
+    email: string,
 }
 export interface Likes extends LikesBody {
     _id: string

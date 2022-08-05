@@ -21,6 +21,5 @@ export default async function handler(
     const likes:Likes[] = await sanityClient.fetch(likesQuery, {
         tweetId,
     })
-    console.log(likes);
   res.status(200).json(likes)
 }
