@@ -35,8 +35,8 @@ export default async function handler(
       body: JSON.stringify(mutations),
       method: 'POST'
     })
-    const json = await result.json
-
-
-  res.status(200).json({ message: 'Added!!!' })
+    const json = await result.json()
+    if (json) {
+      res.status(200).json({ message: 'Added!!!' })
+    }
 }
