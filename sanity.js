@@ -6,6 +6,7 @@ export const config = {
     apiVersion: '2021-10-21',
     useCdn: true,
     revalidate: 1,
+    watchMode: true
   }
 
   export const sanityClient = createClient(config)
