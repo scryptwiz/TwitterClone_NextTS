@@ -11,11 +11,9 @@ import Router from 'next/router'
 import { Tweet } from '../typings'
 import { Toaster } from 'react-hot-toast'
 import { getSession, getProviders, useSession, signIn, signOut } from "next-auth/react";
-
 interface props {
   tweets: Tweet[]
 }
-
 const Home = ({tweets}:props, providers:any) => {
   const { data: session } = useSession()
   if (!session) {

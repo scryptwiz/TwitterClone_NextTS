@@ -94,8 +94,8 @@ const TweetsComponent = ({tweet}:props) => {
     <>
            {commentBoxVisible && (
             <div className="w-full h-screen bg-gray-900/70 flex justify-center top-0 left-0 fixed z-40">
-                <div className="mt-3 space-x-3 h-fit top-20 absolute bg-black z-40 w-80 sm:w-[32rem] rounded p-5">
-                    <div className="my-2 mt-2max-h-44 space-y-5 overflow-y-auto">
+                <div className="mt-3 space-x-3 top-20 absolute bg-black z-40 w-80 sm:w-[32rem] rounded p-5">
+                    <div className="my-2 mt-2 max-h-44 space-y-5 overflow-y-auto">
                         <div className='relative flex space-x-2'>
                             <hr className="absolute left-5 top-10 h-8 border-x border-twitter/30"/>
                             <img src={tweet.profileImg} className='mt-2 w-7 h-7 object-cover rounded-full' alt="Profile Image" />
